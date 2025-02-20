@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Simulação de Empréstimo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        input:focus, select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f1f1f1;
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .buttons button {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .buttons button i {
+            font-size: 1.2rem;
+        }
+
+        .fieldset-custom {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #f9f9f9;
+        }
+
+        .fieldset-custom legend {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+            padding: 0 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Formulário de Simulação de Empréstimo</h2>
+    <form id="loanForm">
+        <fieldset class="fieldset-custom">
+            <legend>Informações Pessoais</legend>
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <label for="nome">Nome Completo:</label>
+                    <input type="text" id="nome" name="nome" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="telefone">Telefone:</label>
+                    <input type="tel" id="telefone" name="telefone" required>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="fieldset-custom">
+            <legend>Detalhes do Empréstimo</legend>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label for="valor">Valor (em milhares):</label>
+                    <input type="number" id="valor" name="valor" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="data">Data:</label>
+                    <input type="date" id="data" name="data" required>
+                </div>
+                <div class="col-md-2">
+                    <label for="parcelas">Parcelas:</label>
+                    <input type="number" id="parcelas" name="parcelas" required>
+                </div>
+                <div class="col-md-2">
+                    <label for="juros">Taxa (%):</label>
+                    <select id="juros" name="juros" required>
+                        <option value="0.25">25%</option>
+                        <option value="0.20">20%</option>
+                        <option value="0.15">15%</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="frequencia">Frequência:</label>
+                    <select id="frequencia" name="frequencia" required>
+                        <option value="mensal">Mensal</option>
+                        <option value="quinzenal">Quinzenal</option>
+                        <option value="semanal">Semanal</option>
+                        <option value="diaria">Diária</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="tipoAmortizacao">Tipo de Amortização:</label>
+                    <select id="tipoAmortizacao" name="tipoAmortizacao" required>
+                        <option value="capitalConstante">Capital Constante</option>
+                        <option value="prestacoesConstantes">Prestações Constantes</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="motivo">Motivo:</label>
+                    <select id="motivo" name="motivo" required>
+                        <option value="pessoal">Pessoal</option>
+                        <option value="negocios">Negócios</option>
+                        <option value="educacao">Educação</option>
+                        <option value="outro">Outro</option>
+                    </select>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="fieldset-custom">
+            <div class="row g-3">
+                <button type="button" onclick="calcularAmortizacao()">
+                    <i class="fas fa-calculator"></i> Calcular
+                </button>
+            </div>
+        </fieldset>
+    </form>
+
+    <fieldset class="fieldset-custom">
+        <legend>Totais</legend>
+        <div id="totais" class="result"></div>
+    </fieldset>
+
+    <fieldset class="fieldset-custom">
+        <div id="resultado" class="result"></div>
+        <div class="buttons">
+            <button onclick="gravar()">
+                <i class="fas fa-save"></i> Gravar
+            </button>
+            <button onclick="imprimir()">
+                <i class="fas fa-print"></i> Imprimir
+            </button>
+            <button onclick="gerarPDF()">
+                <i class="fas fa-file-pdf"></i> PDF
+            </button>
+            <button onclick="visualizar()">
+                <i class="fas fa-eye"></i> Visualizar
+            </button>
+            <button onclick="partilhar()">
+                <i class="fas fa-share-alt"></i> Partilhar
+            </button>
+        </div>
+    </fieldset>
+</div>
+
+<script>
+    function formatarValor(valor) {
+        return new Intl.NumberFormat('pt-BR', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(valor);
+    }
+
+    function calcularAmortizacao() {
+        const valor = parseFloat(document.getElementById('valor').value);
+        const data = document.getElementById('data').value;
+        const parcelas = parseInt(document.getElementById('parcelas').value);
+        const frequencia = document.getElementById('frequencia').value;
+        const tipoAmortizacao = document.getElementById('tipoAmortizacao').value;
+        const jurosMensal = parseFloat(document.getElementById('juros').value);
+
+        let juros;
+        switch (frequencia) {
+            case 'diaria': juros = jurosMensal / 30; break;
+            case 'semanal': juros = jurosMensal / 4; break;
+            case 'quinzenal': juros = jurosMensal / 2; break;
+            case 'mensal': juros = jurosMensal; break;
+            default: juros = jurosMensal;
+        }
+
+        let resultado = '<h3>Plano de Amortização</h3>';
+        resultado += '<table><tr><th>ID</th><th>Data de Pagamento</th><th>Valor Amortizado</th><th>Valor Juros</th><th>Valor da Prestação</th></tr>';
+
+        let intervalo;
+        switch (frequencia) {
+            case 'diaria': intervalo = 1; break;
+            case 'semanal': intervalo = 7; break;
+            case 'quinzenal': intervalo = 15; break;
+            case 'mensal': intervalo = 30; break;
+            default: intervalo = 30;
+        }
+
+        let saldoDevedor = valor;
+        let valorParcela;
+        let totalJuros = 0;
+        let totalAcumulado = 0;
+
+        for (let i = 1; i <= parcelas; i++) {
+            const dataParcela = new Date(data);
+            dataParcela.setDate(dataParcela.getDate() + (i * intervalo));
+
+            let valorJuros, valorAmortizado;
+
+            if (tipoAmortizacao === 'prestacoesConstantes') {
+                valorParcela = valor * (juros * Math.pow(1 + juros, parcelas)) / (Math.pow(1 + juros, parcelas) - 1);
+                valorJuros = saldoDevedor * juros;
+                valorAmortizado = valorParcela - valorJuros;
+            } else {
+                valorAmortizado = valor / parcelas;
+                valorJuros = saldoDevedor * juros;
+                valorParcela = valorAmortizado + valorJuros;
+            }
+
+            saldoDevedor -= valorAmortizado;
+            totalJuros += valorJuros;
+            totalAcumulado += valorParcela;
+
+            resultado += `<tr><td>${i}</td><td>${dataParcela.toLocaleDateString()}</td><td>${formatarValor(valorAmortizado)}</td><td>${formatarValor(valorJuros)}</td><td>${formatarValor(valorParcela)}</td></tr>`;
+        }
+
+        resultado += '</table>';
+        document.getElementById('resultado').innerHTML = resultado;
+
+        const totais = `<p>Total de Juros: ${formatarValor(totalJuros)}</p><p>Total Acumulado a Pagar: ${formatarValor(totalAcumulado)}</p>`;
+        document.getElementById('totais').innerHTML = totais;
+    }
+
+    function gravar() {
+        alert('Função de gravação não implementada.');
+    }
+
+    function imprimir() {
+        window.print();
+    }
+
+    function gerarPDF() {
+        alert('Função de geração de PDF não implementada.');
+    }
+
+    function visualizar() {
+        const resultado = document.getElementById('resultado').innerHTML;
+        const novaJanela = window.open('', '_blank');
+        novaJanela.document.write('<html><head><title>Visualização</title></head><body>');
+        novaJanela.document.write(resultado);
+        novaJanela.document.write('</body></html>');
+        novaJanela.document.close();
+    }
+
+    function partilhar() {
+        const resultado = document.getElementById('resultado').innerText;
+        const texto = encodeURIComponent(resultado);
+        const url = `https://api.whatsapp.com/send?text=${texto}`;
+        window.open(url, '_blank');
+    }
+
+    // Preenche a data atual no campo de data
+    document.getElementById('data').value = new Date().toISOString().split('T')[0];
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

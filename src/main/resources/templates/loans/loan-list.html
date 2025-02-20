@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lista de Empréstimos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .modal-content { border-radius: 10px; }
+        .modal-header { background-color: #007bff; color: white; border-top-left-radius: 10px; border-top-right-radius: 10px; }
+        .modal-title { font-weight: bold; }
+        .modal-body { max-height: 400px; overflow-y: auto; }
+        .loan-row:hover { cursor: pointer; background-color: #f8f9fa; }
+        .loading-spinner { text-align: center; padding: 20px; }
+        .error-message { color: #dc3545; padding: 10px; text-align: center; }
+    </style>
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">Empréstimos</h1>
+    <table class="table table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Data de Criação</th>
+            <th>Valor do Empréstimo</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="loan : ${loans.content}" th:data-loan-id="${loan.id}" class="loan-row">
+            <td th:text="${loan.id}"></td>
+            <td th:text="${loan.clientName}"></td> <!-- Ajustado para usar clientName -->
+            <td th:text="${#temporals.format(loan.date, 'dd/MM/yyyy')}"></td>
+            <td th:text="${#numbers.formatDecimal(loan.amount, 1, 2, 'POINT')}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <a href="/loans/new" class="btn btn-primary mb-3">Novo Empréstimo</a>
+
+    <!-- Modal para exibir as prestações -->
+    <div class="modal fade" id="installmentsModal" tabindex="-1" aria-labelledby="installmentsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="installmentsModalLabel">Prestações do Empréstimo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <div class="loading-spinner" id="loadingSpinner">
+                        <i class="fas fa-spinner fa-spin"></i> Carregando...
+                    </div>
+                    <div class="mb-4" id="loanDetails" style="display: none;">
+                        <p><strong>Valor do Empréstimo:</strong> <span id="loanAmount"></span></p>
+                        <p><strong>ID do Cliente:</strong> <span id="clientId"></span></p>
+                        <p><strong>Nome do Cliente:</strong> <span id="clientName"></span></p>
+                        <p><strong>Data de Criação do Empréstimo:</strong> <span id="loanCreationDate"></span></p>
+                    </div>
+                    <table class="table table-striped" id="installmentsTable" style="display: none;">
+                        <thead>
+                        <tr>
+                            <th>Número da Parcela</th>
+                            <th>Data de Pagamento</th>
+                            <th>Valor da Parcela</th>
+                            <th>Valor de Juro</th>
+                            <th>Valor da Prestação</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody id="installmentsBody"></tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${loans.hasPrevious()} ? '' : 'disabled'">
+                <a class="page-link" th:href="@{/loans(page=${loans.number - 1}, size=${loans.size})}" aria-label="Previous">Anterior</a>
+            </li>
+            <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, loans.totalPages - 1)}"
+                th:classappend="${pageNum == loans.number} ? 'active' : ''">
+                <a class="page-link" th:href="@{/loans(page=${pageNum}, size=${loans.size})}" th:text="${pageNum + 1}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${loans.hasNext()} ? '' : 'disabled'">
+                <a class="page-link" th:href="@{/loans(page=${loans.number + 1}, size=${loans.size})}" aria-label="Next">Próximo</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const rows = document.querySelectorAll('.loan-row');
+        const modal = new bootstrap.Modal(document.getElementById('installmentsModal'));
+
+        rows.forEach(row => {
+            row.addEventListener('click', () => {
+                const loanId = row.getAttribute('data-loan-id');
+                window.location.href = `/loans/${loanId}/installments`;
+            });
+        });
+    });
+</script>
+</body>
+</html>
